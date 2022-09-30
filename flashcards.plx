@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 my $input;
-my $separator = ",";
+my $delimeter = ",";
 my %cards;
 my $line;
 my @fields;
@@ -14,8 +14,8 @@ my $def_field;   #keep track of which column is the definition
 sub gethelp() {
 	print "Usage: $0 [OPTION]... [FILE]\n";
 	print "Run through flashcards from CSV file\n\n";
-	print " -h, --help            Print this help message\n";
-	print " -s, --separator SEP   Set CSV separator to SEP\n";
+	print " -d, --delimeter DELIMETER   Set CSV delimeter to DELIMETER\n";
+	print " -h, --help                  Print this help message\n";
 }
 
 # Check for argument
@@ -30,8 +30,8 @@ while($#ARGV >= 0) {
 		gethelp();
 		exit;
 	}
-	if($ARGV[0] =~ /-s|--separator/) {
-		$separator = $ARGV[1] or die "Error: flag missing argument";
+	if($ARGV[0] =~ /-d|--delimeter/) {
+		$delimeter = $ARGV[1] or die "Error: flag missing argument";
 		shift;
 		shift;
 		next;
@@ -48,7 +48,7 @@ open(my $fh, "<", "$input") or die "Error: could not open \"$input\"";
 # Read first line to determine which column is a function, and which is a definition
 $line = <$fh>;
 chomp $line;
-@fields = split($separator, $line);
+@fields = split($delimeter, $line);
 $field_count = $#fields;
 for(my $i = 0; $i <= $field_count; ++$i) {
 	if($fields[$i] eq "term") {
@@ -63,16 +63,16 @@ for(my $i = 0; $i <= $field_count; ++$i) {
 #print "$term_field\n";
 #print "$def_field\n";
 
-# Check that separator produces valid table
+# Check that delimeter produces valid table
 if($field_count < 1) {
 	close($fh);
-	die "Error: invalid table (no separator)";
+	die "Error: invalid table (no delimeter)";
 }
 
 # Get terms and definitions and close the filehandle
 while($line = <$fh>) {
 	chomp $line;
-	@fields = split($separator, $line);
+	@fields = split($delimeter, $line);
 	$cards{$fields[$term_field]} = $fields[$def_field];
 }
 close($fh);
