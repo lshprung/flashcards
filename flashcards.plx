@@ -78,10 +78,20 @@ while($line = <$fh>) {
 close($fh);
 
 # Go through each card (automatically shuffled!)
-foreach my $k (keys %cards) {
-	print "$k\n";
+while(scalar %cards > 0) {
+	print scalar %cards . " cards remaining\n";
 	readline(STDIN);
-	print "$cards{$k}\n";
-	readline(STDIN);
-	print "\n";
+	foreach my $k (keys %cards) {
+		print "$k\n";
+		readline(STDIN);
+		print "$cards{$k}\n";
+
+		# Check if card should be placed back in deck or discarded
+		print "Discard? [Y/n] ";
+		$line = readline(STDIN);
+		if(!($line =~ /[nN].*/)) {
+			delete $cards{$k};
+		}
+		print "\n";
+	}
 }
